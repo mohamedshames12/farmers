@@ -25,7 +25,7 @@
                 $insert_phone = $conn->prepare("INSERT INTO `admin_page`(name, phone, password,status) VALUES(?,?,?,?)");
                 $insert_phone->execute([$name,$phone,$password,$status]);
                 $success_msg[] = "تم إنشاء حسابك بنجاح";
-                
+                header("Location: index.php");
             }
         }
     }
@@ -75,6 +75,7 @@
                             <span>التسجيل</span>
                             التسجيل
                         </button>
+                        <p> لديك حساب ؟ <a href="index.php">سجل الان</a></p>
                     </form>
                 </div>
         </div>

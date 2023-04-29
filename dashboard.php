@@ -1,3 +1,29 @@
+
+<?php
+
+    include 'connect.php';
+    session_start();
+
+    $admin_id = $_SESSION['admin_id'];
+    
+    if(!$admin_id){
+        header("Location: register.php");
+    }
+
+
+   
+
+    if(isset($_POST['uptate'])) {
+        $access_user = $_POST['access-user'];
+        $access_user = filter_var($access_user, FILTER_SANITIZE_STRING);
+        $id = $_POST['id'];
+        $update_access = $conn->prepare("UPDATE admin_page SET access = ? WHERE id = '$id'");
+        $update_access->execute([$access_user]);
+        $success_msg[] = "access updated!";
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,7 +44,7 @@
             <div class="box">
                 <h3> SmartPlantation</h3>
                 <p>accounts farmers</p>
-                <a href="#">Logout</a>
+                <a href="logout.php">Logout</a>
             </div>
         </section>
 
@@ -37,7 +63,13 @@
 
            <div class="div">
                 <div class="welcome">
-                    <h4>welcome: <span>Mohamed shams</span></h4>
+                <?php
+
+                    $select_name = $conn->prepare("SELECT * FROM admin_page WHERE id = ?");
+                    $select_name->execute([$admin_id]);
+                    $fetch_name = $select_name->fetch(PDO::FETCH_ASSOC);
+                ?>
+                    <h4>welcome: <span><?= $fetch_name['name']?></span></h4>
                 </div>
 
                 <div class="table">
@@ -47,23 +79,40 @@
                         <th>id</th>
                         <th>name</th>
                         <th>phone</th>
-                        <th>data</th>
                         <th>status</th>
+                        <th>data</th>
+                        <th>Access</th>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Mohamed shams</td>
-                        <td>012345634</td>
-                        <td>now</td>
-                        <td>active</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Mayssa Grissa</td>
-                        <td>07654321</td>
-                        <td>yesterday</td>
-                        <td>Unactive</td>
-                    </tr>
+                        <?php
+                            $select_accounts = $conn->prepare("SELECT * FROM admin_page WHERE user_type = 'user'");
+                            $select_accounts->execute();
+                            if($select_accounts->rowCount() > 0) {
+                                while($fetch_accounts = $select_accounts->fetch(PDO::FETCH_ASSOC)) {
+                                    ?>
+                                        <tr>
+                                            <td style="<?php if($fetch_accounts['access'] == 'Allow'){echo "background: green; color:#fff"; }else{echo "background: red; color:#fff";}; ?>"><?= $fetch_accounts['id']?></td>
+                                            <td><?= $fetch_accounts['name']?></td>
+                                            <td><?= $fetch_accounts['phone']?></td>
+                                            <td><?= $fetch_accounts['status']?></td>
+                                            <td><?= $fetch_accounts['cr_date']?></td>
+                                            <td>
+                                                <form method="post" class="access">
+                                                    <input type="hidden" value="<?= $fetch_accounts['id']?>" name="id">
+                                                    <select name="access-user" required>
+                                                        <option selected>chosen one from these</option>
+                                                        <option value="Allow">Allow</option>
+                                                        <option value="UnAllow">UnAllow</option>
+                                                    </select>
+                                                    <input type="submit" value="Uptate" name="uptate">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                }
+                            }else {
+                                echo '<p class="empty">not added users yet!</p>';
+                            }
+                        ?>
                     </table>
                 </div>
            </div>
@@ -71,6 +120,11 @@
     </main>
 
   
+            <!-- sweetalert -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <?php
+    include "alerts.php";
+    ?>
 </body>
 
 </html>

@@ -78,6 +78,7 @@ main{
 .header .flex span {
     color: green;
     font-size: 1.2rem;
+    text-transform: capitalize;
 }
 
 .div{

@@ -151,3 +151,42 @@ table tr td {
     text-align: center;
     padding: 0.3rem;
 }
+
+.empty{
+    text-align: center;
+    margin-bottom: 1rem;
+    border: 1px solid #000;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.4rem;
+    border-radius: 5px;
+}
+
+.access {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.access select {
+    padding: 0.2rem .4rem;
+    outline: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.access input {
+    width: 80px;
+    height: 25px;
+    background-color: seagreen;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.access input:hover{
+    background-color: rgb(17, 76, 43);
+}

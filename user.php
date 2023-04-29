@@ -1,3 +1,21 @@
+
+<?php
+
+    include 'connect.php';
+    session_start();
+
+    $user_id = $_SESSION['user_id'];
+    
+    if(!$user_id){
+        header("Location: register.php");
+    }
+
+
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,13 +36,19 @@
             <div class="box">
                 <h3> Digifarm </h3>
                 <p>Planification des cultures</p>
-                <a href="#">Logout</a>
+                <a href="logout.php">Logout</a>
             </div>
         </section>
 
         <header class="header">
             <div class="flex">
-                <h2>Username: <span>Mohamed Shams</span></h2>
+                <?php
+
+                    $select_name = $conn->prepare("SELECT * FROM admin_page WHERE id = ?");
+                    $select_name->execute([$user_id]);
+                    $fetch_name = $select_name->fetch(PDO::FETCH_ASSOC);
+                ?>
+                <h2>Username: <span><?= $fetch_name['name']?></span></h2>
                 <img src="images/user.png" alt="">
             </div>
 
